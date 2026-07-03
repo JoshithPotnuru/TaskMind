@@ -2,8 +2,11 @@ import axios from 'axios';
 import store from '../redux/store.js';
 import { setCredentials, logoutUser } from '../redux/slices/authSlice.js';
 
+const rawBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const cleanBaseUrl = rawBaseUrl.endsWith('/api') ? rawBaseUrl : `${rawBaseUrl.replace(/\/$/, '')}/api`;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: cleanBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -37,7 +40,7 @@ api.interceptors.response.use(
       if (refreshToken) {
         try {
           const { data } = await axios.post(
-            `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/refresh-token`,
+            `${cleanBaseUrl}/auth/refresh-token`,
             { token: refreshToken }
           );
 
