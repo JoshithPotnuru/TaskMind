@@ -30,9 +30,9 @@ dotenv.config();
 await connectDB();
 
 try {
-  const adminExists = await User.findOne({ email: 'admin@taskmind.com' });
-  if (!adminExists) {
-    console.log('Default admin account not found. Auto-seeding default demo accounts, workspaces, and projects...');
+  const pmExists = await User.findOne({ email: 'pm@taskmind.com' });
+  if (!pmExists) {
+    console.log('Demo PM account not found. Auto-seeding default demo accounts, workspaces, and projects...');
     await seedData();
   }
 } catch (seedError) {

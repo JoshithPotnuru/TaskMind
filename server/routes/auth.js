@@ -12,8 +12,18 @@ import {
   updateProfile,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
+import seedData from '../services/seedService.js';
 
 const router = express.Router();
+
+router.get('/seed-db', async (req, res, next) => {
+  try {
+    await seedData();
+    res.json({ message: 'Database seeded successfully with demo users!' });
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.post('/register', register);
 router.post('/login', login);
