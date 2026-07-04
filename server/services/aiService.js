@@ -3,8 +3,15 @@ import openai from '../config/openai.js';
 // Helper to safely call OpenAI and parse JSON responses
 const callOpenAI = async (prompt, fallbackObj) => {
   try {
-    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'mock-key-for-now-if-not-set') {
-      console.log('OpenAI Key not set, using simulated fallback');
+    const apiKey = process.env.OPENAI_API_KEY;
+    const isMockKey = !apiKey || 
+      apiKey === 'mock-key-for-now-if-not-set' || 
+      apiKey.startsWith('your_') || 
+      apiKey.startsWith('mock') || 
+      apiKey.includes('placeholder');
+
+    if (isMockKey) {
+      console.log('OpenAI Key not set or is placeholder, using simulated fallback');
       return fallbackObj;
     }
 
