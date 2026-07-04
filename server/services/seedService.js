@@ -308,11 +308,10 @@ const seedData = async () => {
     });
 
     console.log('Database successfully seeded!');
-    process.exit(0);
   } catch (error) {
     console.error(`Database seeding failed: ${error.message}`);
-    process.exit(1);
+    throw error;
   }
 };
 
-seedData();
+export default seedData;

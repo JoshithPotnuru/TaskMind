@@ -11,6 +11,8 @@ import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/error.js';
 import { initSocket } from './services/socketService.js';
+import User from './models/User.js';
+import seedData from './services/seedService.js';
 
 // Route Imports
 import authRoutes from './routes/auth.js';
@@ -24,8 +26,18 @@ import adminRoutes from './routes/admin.js';
 
 dotenv.config();
 
-// Connect to Database
-connectDB();
+// Connect to Database & Auto-Seed
+await connectDB();
+
+try {
+  const userCount = await User.countDocuments({});
+  if (userCount === 0) {
+    console.log('No users found in database. Auto-seeding default demo accounts and projects...');
+    await seedData();
+  }
+} catch (seedError) {
+  console.error('Failed to auto-seed database on startup:', seedError.message);
+}
 
 const app = express();
 const server = http.createServer(app);

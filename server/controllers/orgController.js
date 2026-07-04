@@ -9,7 +9,9 @@ export const createOrg = async (req, res, next) => {
   try {
     const { name, slug, description, logo, departments } = req.body;
 
-    const slugExists = await Organization.findOne({ slug: slug.toLowerCase() });
+    const derivedSlug = (slug || name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    const slugExists = await Organization.findOne({ slug: derivedSlug });
     if (slugExists) {
       res.status(400);
       return next(new Error('Slug/Domain is already taken by another organization'));
@@ -17,7 +19,7 @@ export const createOrg = async (req, res, next) => {
 
     const org = await Organization.create({
       name,
-      slug: slug.toLowerCase(),
+      slug: derivedSlug,
       description,
       logo,
       departments: departments || [],

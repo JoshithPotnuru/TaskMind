@@ -34,6 +34,13 @@ const Chat = () => {
       
       // Fetch org users, projects, teams for channels sidebar
       const fetchSidebarData = async () => {
+        if (!user || !user.organization) {
+          setUsersList([]);
+          setProjectsList([]);
+          setTeamsList([]);
+          return;
+        }
+
         try {
           const { data: orgData } = await api.get(`/orgs/${user.organization}`);
           setUsersList(orgData.members?.filter(m => m.user?._id !== user.id).map(m => m.user) || []);

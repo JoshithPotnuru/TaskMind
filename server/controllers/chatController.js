@@ -1,5 +1,6 @@
 import Message from '../models/Message.js';
 import User from '../models/User.js';
+import mongoose from 'mongoose';
 
 // 1. Send Message (HTTP fallback/attachment handler)
 export const sendMessage = async (req, res, next) => {
@@ -15,11 +16,15 @@ export const sendMessage = async (req, res, next) => {
       };
     }
 
+    const validRecipient = recipientId && mongoose.Types.ObjectId.isValid(recipientId) ? recipientId : null;
+    const validProject = projectId && mongoose.Types.ObjectId.isValid(projectId) ? projectId : null;
+    const validTeam = teamId && mongoose.Types.ObjectId.isValid(teamId) ? teamId : null;
+
     const message = await Message.create({
       sender: req.user._id,
-      recipient: recipientId || null,
-      project: projectId || null,
-      team: teamId || null,
+      recipient: validRecipient,
+      project: validProject,
+      team: validTeam,
       text: text || '',
       attachment: attachmentObj,
       voiceMessageUrl: voiceMessageUrl || '',
@@ -46,10 +51,13 @@ export const getMessages = async (req, res, next) => {
 
     const filter = {};
     if (projectId) {
+      if (!mongoose.Types.ObjectId.isValid(projectId)) return res.json([]);
       filter.project = projectId;
     } else if (teamId) {
+      if (!mongoose.Types.ObjectId.isValid(teamId)) return res.json([]);
       filter.team = teamId;
     } else if (recipientId) {
+      if (!mongoose.Types.ObjectId.isValid(recipientId)) return res.json([]);
       filter.$or = [
         { sender: req.user._id, recipient: recipientId },
         { sender: recipientId, recipient: req.user._id },

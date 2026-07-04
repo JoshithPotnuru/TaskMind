@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "seed": "node services/seedService.js",
+    "seed": "node seed-cli.js",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit"
   },
   "dependencies": {
