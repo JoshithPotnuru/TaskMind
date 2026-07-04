@@ -59,6 +59,7 @@ export const register = async (req, res, next) => {
 
     res.status(201).json({
       message: 'Registration successful. Verification email sent.',
+      otp: !process.env.SMTP_USER ? otp : undefined,
       user: {
         id: user._id,
         name: user.name,
@@ -164,7 +165,10 @@ export const forgotPassword = async (req, res, next) => {
 
     await sendResetPasswordOTP(user.email, user.name, otp);
 
-    res.json({ message: 'Password reset OTP sent to your email' });
+    res.json({
+      message: 'Password reset OTP sent to your email',
+      otp: !process.env.SMTP_USER ? otp : undefined
+    });
   } catch (error) {
     next(error);
   }

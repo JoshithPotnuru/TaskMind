@@ -33,13 +33,20 @@ const Register = () => {
     setLoading(true);
     setErrorMessage('');
     try {
-      await api.post('/auth/register', {
+      const response = await api.post('/auth/register', {
         name: data.name,
         username: data.username,
         email: data.email,
         password: data.password,
       });
-      toast.success('Registration successful. OTP sent to your email.');
+      
+      if (response.data.otp) {
+        toast.info(`Demo Mode: Use code ${response.data.otp} to verify.`, { autoClose: false });
+        setOtp(response.data.otp);
+      } else {
+        toast.success('Registration successful. OTP sent to your email.');
+      }
+      
       setRegisteredEmail(data.email);
       setVerifyMode(true);
     } catch (error) {

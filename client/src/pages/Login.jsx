@@ -81,8 +81,13 @@ const Login = () => {
 
     setForgotLoading(true);
     try {
-      await api.post('/auth/forgot-password', { email: forgotEmail });
-      toast.success('Verification code sent to your email!');
+      const response = await api.post('/auth/forgot-password', { email: forgotEmail });
+      if (response.data.otp) {
+        toast.info(`Demo Mode: Use code ${response.data.otp} to verify.`, { autoClose: false });
+        setOtpCode(response.data.otp);
+      } else {
+        toast.success('Verification code sent to your email!');
+      }
       setForgotStep(2);
     } catch (error) {
       toast.error(error.message || 'Failed to dispatch reset code.');
