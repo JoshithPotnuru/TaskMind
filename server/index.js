@@ -30,9 +30,9 @@ dotenv.config();
 await connectDB();
 
 try {
-  const userCount = await User.countDocuments({});
-  if (userCount === 0) {
-    console.log('No users found in database. Auto-seeding default demo accounts and projects...');
+  const adminExists = await User.findOne({ email: 'admin@taskmind.com' });
+  if (!adminExists) {
+    console.log('Default admin account not found. Auto-seeding default demo accounts, workspaces, and projects...');
     await seedData();
   }
 } catch (seedError) {

@@ -9,7 +9,7 @@ export const createOrg = async (req, res, next) => {
   try {
     const { name, slug, description, logo, departments } = req.body;
 
-    const derivedSlug = (slug || name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const derivedSlug = (slug || name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || Math.random().toString(36).substring(2, 8);
 
     const slugExists = await Organization.findOne({ slug: derivedSlug });
     if (slugExists) {
